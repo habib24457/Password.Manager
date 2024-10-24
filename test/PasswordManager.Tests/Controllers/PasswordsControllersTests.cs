@@ -11,11 +11,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PasswordManager.Tests.ControllersTests
 {
-    
-    
     public class PasswordsControllersTests
     {
-   
         [Fact]
         public async Task GetAll_ReturnsOkResult_WithListOfPasswords()
         {
@@ -39,6 +36,25 @@ namespace PasswordManager.Tests.ControllersTests
             var okResult = Assert.IsType<OkObjectResult>(result); 
             var returnValue = Assert.IsType<List<Password>>(okResult.Value); 
             Assert.Equal(2, returnValue.Count);
+        }
+        
+        [Fact]
+        public async Task GetAll_ReturnsOkResult_WithEmptyList()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<PasswordsDbContext>()
+                .UseInMemoryDatabase(databaseName: "passwordsDB")
+                .Options;
+            var context = new PasswordsDbContext(options);
+            var controller = new PasswordsController(context); // No passwords added to the context
+
+            // Act
+            var result = await controller.GetAll();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsType<List<Password>>(okResult.Value);
+            Assert.Empty(returnValue);
         }
     }
 }
