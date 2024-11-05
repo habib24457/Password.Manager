@@ -59,7 +59,7 @@ namespace PasswordManager.Tests.ControllersTests
         }
         
         [Fact]
-        public async Task EncryptionService_ShouldReturn_EncryptedAndDecryptedPassword()
+        public void EncryptionService_ShouldReturn_EncryptedAndDecryptedPassword()
         {
             // Arrange
             var newPasswordItem = new Password

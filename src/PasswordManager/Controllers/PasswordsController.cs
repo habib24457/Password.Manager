@@ -43,7 +43,6 @@ namespace PasswordManager.Controllers
             return CreatedAtAction("CreatePassword", new { id = passwordItem.Id }, passwordItem);
         }
 
-        //Get One Password decrypted or encrypted
         [HttpGet]
         [Route("{id:int}/{isDecrypted}")]
         public async Task<IActionResult> GetOneById([FromRoute] int id, bool isDecrypted)
@@ -94,7 +93,6 @@ namespace PasswordManager.Controllers
             return Ok(existingPassword);
         }
 
-        //Delete a Password store item
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IActionResult> DeletePassword([FromRoute] int id)
