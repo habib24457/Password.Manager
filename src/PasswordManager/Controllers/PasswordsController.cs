@@ -11,7 +11,6 @@ namespace PasswordManager.Controllers
     public class PasswordsController : ControllerBase
     {
         private readonly PasswordsDbContext _dbContext;
-        private EncryptionService encryptPasswordObj = new EncryptionService();
 
         public PasswordsController(PasswordsDbContext passwordsDbContext)
         {
@@ -19,7 +18,7 @@ namespace PasswordManager.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
             var passwords = await _dbContext.PasswordItem.ToListAsync();
             return Ok(passwords);
@@ -30,8 +29,8 @@ namespace PasswordManager.Controllers
         {
             if (passwordItem == null)
                 return BadRequest();
-
-            var encryptedPassword = encryptPasswordObj.EncryptPassword(passwordItem.UserPassword);
+            var encryptService = new EncryptionService();
+            var encryptedPassword = encryptService.EncryptPassword(passwordItem.UserPassword);
             var addPassword = new Password
             {
                 UserName = passwordItem.UserName,
@@ -51,7 +50,8 @@ namespace PasswordManager.Controllers
         {
             if (id == null)
                 return BadRequest();
-
+            
+            var encryptService = new EncryptionService();
             var passwordItem = await _dbContext.PasswordItem.FindAsync(id);
 
             if (passwordItem == null)
@@ -62,7 +62,7 @@ namespace PasswordManager.Controllers
             if (isDecrypted)
             {
                 var encryptedPassword = passwordItem.UserPassword;
-                var decryptedPassword = encryptPasswordObj.DecryptPassword(encryptedPassword);
+                var decryptedPassword = encryptService.DecryptPassword(encryptedPassword);
                 passwordItem.UserPassword = decryptedPassword;
                 return Ok(passwordItem);
             }
@@ -77,6 +77,8 @@ namespace PasswordManager.Controllers
         {
             if (id == null)
                 return BadRequest();
+            
+            var encryptService = new EncryptionService();
             var existingPassword = await _dbContext.PasswordItem.FindAsync(id);
             if (existingPassword == null)
             {
@@ -86,7 +88,7 @@ namespace PasswordManager.Controllers
             existingPassword.UserName = password.UserName;
             existingPassword.App = password.App;
             existingPassword.Category = password.Category;
-            existingPassword.UserPassword = encryptPasswordObj.EncryptPassword(password.UserPassword);
+            existingPassword.UserPassword = encryptService.EncryptPassword(password.UserPassword);
             await _dbContext.SaveChangesAsync();
 
             return Ok(existingPassword);

@@ -1,0 +1,19 @@
+# Ignore the build results
+/bin/
+/obj/
+
+# User-specific files
+*.suo
+*.user
+*.userprefs
+
+# Rider project files
+.idea/
+*.sln.iml
+
+# Visual Studio Code settings
+.vscode/
+
+# Other common ignores
+*.log
+*.tmp
